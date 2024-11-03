@@ -1,0 +1,148 @@
+<!-- custom_election.html -->
+
+{% extends "base.html" %}
+
+{% block title %}
+    Set Up Custom Election
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: #e74c3c;
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .back-button:hover {
+        background-color: #c0392b;
+    }
+
+    form {
+        margin-top: 60px;
+        text-align: center;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    input[type="text"], input[type="number"] {
+        width: 300px;
+        padding: 10px;
+        margin: 5px;
+    }
+
+    input[type="submit"] {
+        padding: 10px 20px;
+        font-size: 18px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #2ecc71;
+    }
+
+    #candidate-container input {
+        display: block;
+        margin: 5px auto;
+        width: 300px;
+    }
+
+    .candidate-buttons {
+        margin: 10px;
+    }
+
+    .candidate-buttons button {
+        padding: 5px 10px;
+        margin: 5px;
+        font-size: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('election.index') }}" class="back-button">Back</a>
+
+<div class="container mt-5">
+    <h1>Set Up a Custom Election</h1>
+    
+    <form method="POST" action="{{ url_for('admin.setup_custom_election') }}">
+        <div class="form-group">
+            <label for="election_name">Election Name:</label>
+            <input type="text" class="form-control" id="election_name" name="election_name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="max_votes_custom">Maximum Votes:</label>
+            <input type="number" class="form-control" id="max_votes_custom" name="max_votes_custom" min="1" required>
+        </div>
+
+        <div class="form-group">
+            <label for="threshold_votes_custom">Threshold Votes for Early Conclusion:</label>
+            <input type="number" class="form-control" id="threshold_votes_custom" name="threshold_votes_custom" min="1" required>
+        </div>
+
+        <div class="form-group">
+            <label for="start_date">Start Date (Optional):</label>
+            <input type="datetime-local" class="form-control" id="start_date" name="start_date">
+        </div>
+
+        <div class="form-group">
+            <label for="end_date">End Date (Optional):</label>
+            <input type="datetime-local" class="form-control" id="end_date" name="end_date">
+        </div>
+
+        <div class="form-group">
+            <label>Candidate Names:</label>
+            <div id="candidate-container">
+                <input type="text" class="form-control" name="candidate_names[]" required>
+            </div>
+        </div>
+
+        <div class="candidate-buttons">
+            <button type="button" class="btn btn-secondary" onclick="addCandidateField()">Add Candidate</button>
+            <button type="button" class="btn btn-danger" onclick="removeCandidateField()">Remove Candidate</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Create Election</button>
+    </form>
+</div>
+
+<script>
+function addCandidateField() {
+    const container = document.getElementById('candidate-container');
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'candidate_names[]';
+    input.className = 'form-control';
+    input.required = true;
+    container.appendChild(input);
+}
+
+function removeCandidateField() {
+    const container = document.getElementById('candidate-container');
+    if (container.children.length > 1) {
+        container.removeChild(container.lastChild);
+    }
+}
+</script>
+{% endblock %}

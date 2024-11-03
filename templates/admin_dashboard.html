@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Election Name</th>
+                <th>Status</th>
+                <th>Total Votes</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for election in elections %}
+            <tr>
+                <td>{{ election.election_name }}</td>
+                <td>{{ election.status }}</td>
+                <td>{{ election.get_total_votes() }}</td> <!-- Call to get_total_votes method -->
+                <td>
+                    {% if election.is_early_determination() %}
+                    <form action="{{ url_for('stop_election', election_id=election.id) }}" method="post">
+                        <button type="submit">Conclude Early</button>
+                    </form>
+                    {% else %}
+                    <span>N/A</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Early Election Determination Section -->
+    <div class="early-determination">
+        <h2>Early Election Determination</h2>
+        <div id="prediction-box">
+            {% if elections %}
+                {% for election in elections %}
+                    <h3>{{ election.election_name }}</h3>
+                    <p>Current Candidates:</p>
+                    <ul>
+                        {% for candidate in election.candidates %}
+                            <li>
+                                {{ candidate.name }} - Votes: {{ candidate.votes }}
+                                {% if candidate.votes >= election.threshold_votes %} <!-- Corrected to use threshold_votes -->
+                                    <span class="prediction success">Early Determination: WINNER!</span>
+                                {% else %}
+                                    <span class="prediction">Votes needed for early determination: {{ election.threshold_votes - candidate.votes }}</span> <!-- Corrected to use threshold_votes -->
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            {% else %}
+                <p>No elections available for early determination.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

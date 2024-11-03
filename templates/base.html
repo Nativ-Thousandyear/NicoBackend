@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EveryVoter{% endblock %}</title>
+    
+    <!-- Bootstrap CSS (using CDN for performance) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <!-- FontAwesome -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/js/all.min.js"></script>
+
+
+    {% block extra_styles %}
+    {% endblock %}
+</head>
+<body>
+    <div class="shooting-stars"></div>
+    <!-- Pre-Content Block (background layers, navigation buttons, etc.) -->
+    {% block pre_content %}
+    {% endblock %}
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container mt-2">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} text-center" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Main Content -->
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Optional Election ID for JS context -->
+    {% if election_id %}
+    <script>
+        window.election_id = "{{ election_id }}";
+    </script>
+    {% endif %}
+    
+    <!-- Extra Scripts Block (for adding page-specific scripts) -->
+    {% block extra_scripts %}
+    {% endblock %}
+    
+    <!-- Bootstrap JS and Dependencies (defer for non-essential scripts) -->
+    <script defer src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script defer src="{{ url_for('static', filename='shooting-stars.js') }}"></script>
+
+    <!-- Optional Shooting Stars Script (load only if needed) -->
+    {% block shooting_stars %}
+        
+    {% endblock %}
+</body>
+</html>
